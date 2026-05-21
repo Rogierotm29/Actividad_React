@@ -18,7 +18,7 @@ const LoginView = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -27,10 +27,11 @@ const LoginView = () => {
       return;
     }
 
-    if (login(username, password)) {
+    try {
+      await login(username, password);
       navigate('/home');
-    } else {
-      setError('Error al iniciar sesión');
+    } catch (err) {
+      setError(err.message || 'Error al iniciar sesión');
     }
   };
 
@@ -117,7 +118,7 @@ const LoginView = () => {
         </form>
 
         <Typography variant="caption" sx={{ display: 'block', mt: 2.5, textAlign: 'center', color: 'text.disabled' }}>
-          Puedes usar cualquier usuario y contraseña
+          Usa tus credenciales registradas
         </Typography>
       </Paper>
     </Box>

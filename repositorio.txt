@@ -1,0 +1,2 @@
+Repositorio del proyecto frontend (React + Vite):
+https://github.com/Rogierotm29/Actividad_React.git

@@ -1,28 +1,53 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
+
+const BASE_URL = "http://localhost:3000";
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
 
-  const login = (username, password) => {
-    // Validación simple - en producción se conectaría a un backend
-    if (username && password) {
-      setUser({ username });
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+    if (savedToken && savedUser) {
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
       setIsAuthenticated(true);
-      return true;
     }
-    return false;
+  }, []);
+
+  const login = async (username, password) => {
+    const res = await fetch(`${BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.login) {
+      throw new Error(data.msg || 'Error al iniciar sesión');
+    }
+    const userData = { username };
+    setUser(userData);
+    setToken(data.token);
+    setIsAuthenticated(true);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    return true;
   };
 
   const logout = () => {
     setUser(null);
+    setToken(null);
     setIsAuthenticated(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
