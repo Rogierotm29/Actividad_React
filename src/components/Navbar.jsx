@@ -26,6 +26,9 @@ const Navbar = () => {
           <Button color="inherit" onClick={() => navigate('/profile')}>
             Mi Perfil
           </Button>
+          <Button color="inherit" onClick={() => navigate('/users')}>
+            Usuarios
+          </Button>
         </Box>
         <Box sx={{ mr: 2 }}>
           Bienvenido, {user?.username}

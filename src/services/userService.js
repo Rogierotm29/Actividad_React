@@ -1,28 +1,20 @@
-const BASE_URL = "http://localhost:3000"
+let mockUsers = [
+  { id: 1, username: 'admin', email: 'admin@example.com', role: 'admin' },
+  { id: 2, username: 'usuario', email: 'usuario@example.com', role: 'user' },
+  { id: 3, username: 'juan', email: 'juan@example.com', role: 'user' },
+];
 
-export const getUsers = async (token) => {
-  const res = await fetch(`${BASE_URL}/users`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (!res.ok) throw new Error("Error al obtener usuarios")
-  return res.json()
-}
+export const getUsers = async () => {
+  return [...mockUsers];
+};
 
 export const createUser = async (data) => {
-  const res = await fetch(`${BASE_URL}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error("Error al crear usuario")
-  return res.json()
-}
+  const newUser = { id: Date.now(), ...data };
+  mockUsers.push(newUser);
+  return newUser;
+};
 
-export const deleteUser = async (id, token) => {
-  const res = await fetch(`${BASE_URL}/users/${id}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (!res.ok) throw new Error("Error al eliminar usuario")
-  return res.json()
-}
+export const deleteUser = async (id) => {
+  mockUsers = mockUsers.filter((u) => u.id !== id);
+  return { success: true };
+};
