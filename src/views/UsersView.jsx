@@ -106,17 +106,17 @@ const UsersView = () => {
                   </TableRow>
                 ) : (
                   users.map((user) => (
-                    <TableRow key={user.id} hover>
+                    <TableRow key={user._id} hover>
                       <TableCell>{user.username}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell sx={{ textTransform: 'capitalize' }}>{user.role}</TableCell>
                       <TableCell align="center">
-                        <IconButton color="primary" onClick={() => navigate(`/users/${user.id}`)}>
+                        <IconButton color="primary" onClick={() => navigate(`/users/${user._id}`)}>
                           <VisibilityIcon />
                         </IconButton>
                       </TableCell>
                       <TableCell align="center">
-                        <IconButton color="error" onClick={() => handleDelete(user.id)}>
+                        <IconButton color="error" onClick={() => handleDelete(user._id)}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>

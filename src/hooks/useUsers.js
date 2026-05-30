@@ -32,7 +32,7 @@ const useUsers = () => {
 
   const removeUser = async (id) => {
     await deleteUser(id, token);
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+    setUsers((prev) => prev.filter((u) => u._id !== id));
   };
 
   return { users, loading, error, addUser, removeUser };
