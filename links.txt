@@ -1,0 +1,5 @@
+Frontend (Vercel):
+https://actividad-react-theta.vercel.app/
+
+API (Render):
+https://actividadapi.onrender.com
