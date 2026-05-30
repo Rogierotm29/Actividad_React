@@ -1,26 +1,39 @@
-let mockUsers = [
-  { id: 1, username: 'admin', email: 'admin@example.com', role: 'admin' },
-  { id: 2, username: 'usuario', email: 'usuario@example.com', role: 'user' },
-  { id: 3, username: 'juan', email: 'juan@example.com', role: 'user' },
-];
+const BASE_URL = "https://actividadapi.onrender.com";
 
-export const getUsers = async () => {
-  return [...mockUsers];
+export const getUsers = async (token) => {
+  const res = await fetch(`${BASE_URL}/users`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Error al obtener usuarios");
+  return res.json();
 };
 
-export const createUser = async (data) => {
-  const newUser = { id: Date.now(), ...data };
-  mockUsers.push(newUser);
-  return newUser;
+export const createUser = async (data, token) => {
+  const res = await fetch(`${BASE_URL}/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Error al crear usuario");
+  return res.json();
 };
 
-export const deleteUser = async (id) => {
-  mockUsers = mockUsers.filter((u) => u.id !== id);
-  return { success: true };
+export const deleteUser = async (id, token) => {
+  const res = await fetch(`${BASE_URL}/users/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Error al eliminar usuario");
+  return res.json();
 };
 
-export const getUserById = async (id) => {
-  const user = mockUsers.find((u) => u.id === Number(id));
-  if (!user) throw new Error('Usuario no encontrado');
-  return { ...user };
+export const getUserById = async (id, token) => {
+  const res = await fetch(`${BASE_URL}/users/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Usuario no encontrado");
+  return res.json();
 };

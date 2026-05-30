@@ -18,10 +18,12 @@ import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
 import EmailIcon from '@mui/icons-material/Email';
 import { getUserById } from '../services/userService';
+import useAuth from '../hooks/useAuth';
 
 const UserDetailView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -39,7 +41,7 @@ const UserDetailView = () => {
     console.log('Componente UserDetailView actualizado — id:', id);
     setLoading(true);
     setError('');
-    getUserById(id)
+    getUserById(id, token)
       .then((data) => setUser(data))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));

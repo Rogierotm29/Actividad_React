@@ -2,10 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
-const MOCK_USERS = [
-  { username: 'admin', password: 'admin123' },
-  { username: 'usuario', password: '1234' },
-];
+const BASE_URL = "https://actividadapi.onrender.com";
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,18 +20,20 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    const found = MOCK_USERS.find(
-      (u) => u.username === username && u.password === password
-    );
-    if (!found) {
-      throw new Error('Usuario o contraseña incorrectos');
+    const res = await fetch(`${BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.login) {
+      throw new Error(data.msg || 'Usuario o contraseña incorrectos');
     }
-    const mockToken = `mock-token-${Date.now()}`;
     const userData = { username };
     setUser(userData);
-    setToken(mockToken);
+    setToken(data.token);
     setIsAuthenticated(true);
-    localStorage.setItem('token', mockToken);
+    localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(userData));
     return true;
   };
