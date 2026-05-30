@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
-import { AuthContext } from '../contexts/AuthContext';
+import useAuth from '../hooks/useAuth';
 
 const Navbar = () => {
-  const { isAuthenticated, logout, user } = useContext(AuthContext);
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
 
   if (!isAuthenticated) {

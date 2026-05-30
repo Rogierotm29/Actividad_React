@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Container,
   Box,
@@ -13,7 +13,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import RouteIcon from '@mui/icons-material/AltRoute';
 import PaletteIcon from '@mui/icons-material/Palette';
 import BoltIcon from '@mui/icons-material/Bolt';
-import { AuthContext } from '../contexts/AuthContext';
+import useAuth from '../hooks/useAuth';
 
 const tecnologias = [
   {
@@ -33,13 +33,13 @@ const tecnologias = [
   },
   {
     icon: <CodeIcon fontSize="large" color="primary" />,
-    titulo: 'Context API + Hooks',
-    descripcion: 'Estado global de sesión manejado con useContext, useState y createContext.',
+    titulo: 'Hooks personalizados',
+    descripcion: 'useAuth y useUsers encapsulan la lógica de autenticación y gestión de usuarios.',
   },
 ];
 
 const HomeView = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return (
     <Box sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 5 }}>

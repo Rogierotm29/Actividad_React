@@ -18,3 +18,9 @@ export const deleteUser = async (id) => {
   mockUsers = mockUsers.filter((u) => u.id !== id);
   return { success: true };
 };
+
+export const getUserById = async (id) => {
+  const user = mockUsers.find((u) => u.id === Number(id));
+  if (!user) throw new Error('Usuario no encontrado');
+  return { ...user };
+};

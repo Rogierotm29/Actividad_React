@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -23,43 +23,24 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { getUsers, createUser, deleteUser } from '../services/userService';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import useUsers from '../hooks/useUsers';
 
-const emptyForm = { username: '', password: '', email: '' };
+const emptyForm = { username: '', password: '', email: '', role: 'user' };
 
 const UsersView = () => {
-  const { token } = useContext(AuthContext);
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { users, loading, error, addUser, removeUser } = useUsers();
   const [form, setForm] = useState(emptyForm);
   const [formError, setFormError] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await getUsers(token);
-      setUsers(data);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const navigate = useNavigate();
 
   const handleDelete = async (id) => {
     try {
-      await deleteUser(id, token);
-      setUsers((prev) => prev.filter((u) => u._id !== id));
+      await removeUser(id);
     } catch (e) {
-      setError(e.message);
+      console.error(e.message);
     }
   };
 
@@ -71,8 +52,7 @@ const UsersView = () => {
     setSubmitting(true);
     setFormError('');
     try {
-      const newUser = await createUser(form);
-      setUsers((prev) => [...prev, newUser]);
+      await addUser(form);
       setForm(emptyForm);
       setDialogOpen(false);
     } catch (e) {
@@ -112,27 +92,31 @@ const UsersView = () => {
                 <TableRow sx={{ backgroundColor: 'primary.main' }}>
                   <TableCell sx={{ color: 'white', fontWeight: 700 }}>Usuario</TableCell>
                   <TableCell sx={{ color: 'white', fontWeight: 700 }}>Email</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 700 }}>Creado</TableCell>
+                  <TableCell sx={{ color: 'white', fontWeight: 700 }}>Rol</TableCell>
+                  <TableCell sx={{ color: 'white', fontWeight: 700 }} align="center">Detalle</TableCell>
                   <TableCell sx={{ color: 'white', fontWeight: 700 }} align="center">Eliminar</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} align="center" sx={{ py: 4, color: 'text.secondary' }}>
+                    <TableCell colSpan={5} align="center" sx={{ py: 4, color: 'text.secondary' }}>
                       No hay usuarios registrados
                     </TableCell>
                   </TableRow>
                 ) : (
                   users.map((user) => (
-                    <TableRow key={user._id} hover>
+                    <TableRow key={user.id} hover>
                       <TableCell>{user.username}</TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        {new Date(user.createdAt).toLocaleDateString('es-MX')}
+                      <TableCell sx={{ textTransform: 'capitalize' }}>{user.role}</TableCell>
+                      <TableCell align="center">
+                        <IconButton color="primary" onClick={() => navigate(`/users/${user.id}`)}>
+                          <VisibilityIcon />
+                        </IconButton>
                       </TableCell>
                       <TableCell align="center">
-                        <IconButton color="error" onClick={() => handleDelete(user._id)}>
+                        <IconButton color="error" onClick={() => handleDelete(user.id)}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -144,7 +128,6 @@ const UsersView = () => {
           </TableContainer>
         )}
 
-        {/* Dialog para agregar usuario */}
         <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
           <DialogTitle fontWeight={700}>Nuevo usuario</DialogTitle>
           <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '16px !important' }}>

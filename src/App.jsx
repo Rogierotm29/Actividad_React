@@ -6,6 +6,7 @@ import LoginView from './views/LoginView';
 import HomeView from './views/HomeView';
 import ProfileView from './views/ProfileView';
 import UsersView from './views/UsersView';
+import UserDetailView from './views/UserDetailView';
 
 const PrivateRoute = ({ isAuthenticated, children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -40,6 +41,14 @@ const AppContent = () => {
           element={
             <PrivateRoute isAuthenticated={isAuthenticated}>
               <UsersView />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/users/:id"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <UserDetailView />
             </PrivateRoute>
           }
         />

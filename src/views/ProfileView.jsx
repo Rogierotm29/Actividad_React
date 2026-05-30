@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
@@ -11,10 +11,10 @@ import {
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { AuthContext } from '../contexts/AuthContext';
+import useAuth from '../hooks/useAuth';
 
 const ProfileView = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const inicial = user?.username?.charAt(0).toUpperCase();
 
   return (
